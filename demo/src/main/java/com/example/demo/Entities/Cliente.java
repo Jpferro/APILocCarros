@@ -19,8 +19,8 @@ import lombok.Setter;
 @Table(name = "clientes")
 @Getter @Setter
 @NoArgsConstructor @AllArgsConstructor
-
 public class Cliente {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,14 +29,18 @@ public class Cliente {
     private String nome;
 
     @Column(nullable = false, unique = true)
-    private String documento;
+    private String cpf;
 
     @Column(nullable = false, unique = true)
     private String email;
 
     @Column(nullable = false)
-    private String endereco;
+    private String senha;
+
+    @Column(nullable = false)
+    private LocalDate dataNascimento;
 
     @Column(nullable = false)
     private String telefone;
 }
+
