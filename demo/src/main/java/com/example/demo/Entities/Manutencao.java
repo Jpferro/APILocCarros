@@ -20,17 +20,19 @@ import lombok.Setter;
 @Data
 @Entity
 @Table(name = "manutencao")
-@Getter @Setter
-@NoArgsConstructor @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 
 public class Manutencao {
 
- @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "carros") 
+    @JoinColumn(name = "carros")
     @Column(nullable = false)
     private Long carroId;
 
