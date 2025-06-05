@@ -1,6 +1,8 @@
-package com.example.demo.Services;
+package com.example.demo.service;
 
 import com.example.demo.Entities.Cliente;
+import com.example.demo.dto.ClienteDTO;
+import com.example.demo.mapper.ClienteMapper;
 import com.example.demo.Repositories.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,30 +16,39 @@ public class ClienteService {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    public Cliente criarCliente(Cliente cliente) {
-        return clienteRepository.save(cliente);
+    @Autowired
+    private ClienteMapper clienteMapper;
+
+    public List<ClienteDTO> listarTodos() {
+        return clienteMapper.toDTOList(clienteRepository.findAll());
     }
 
-    public List<Cliente> listarTodos() {
-        return clienteRepository.findAll();
+    public Optional<ClienteDTO> buscarPorId(Long id) {
+        return clienteRepository.findById(id).map(clienteMapper::toDTO);
     }
 
-    public Optional<Cliente> buscarPorId(Long id) {
-        return clienteRepository.findById(id);
+    public ClienteDTO criarCliente(ClienteDTO clienteDTO) {
+        Cliente cliente = clienteMapper.toEntity(clienteDTO);
+        Cliente salvo = clienteRepository.save(cliente);
+        return clienteMapper.toDTO(salvo);
     }
 
-    public Cliente atualizarCliente(Long id, Cliente clienteAtualizado) {
-        return clienteRepository.findById(id).map(cliente -> {
-            cliente.setNome(clienteAtualizado.getNome());
-            cliente.setEmail(clienteAtualizado.getEmail());
-            cliente.setTelefone(clienteAtualizado.getTelefone());
-            cliente.setEndereco(clienteAtualizado.getEndereco());
-            cliente.setDocumento(clienteAtualizado.getDocumento());
-            return clienteRepository.save(cliente);
-        }).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+    public ClienteDTO atualizarCliente(Long id, ClienteDTO clienteDTO) {
+        return clienteRepository.findById(id)
+            .map(cliente -> {
+                cliente.setNome(clienteDTO.getNome());
+                cliente.setCpf(clienteDTO.getCpf());
+                cliente.setEmail(clienteDTO.getEmail());
+                cliente.setSenha(clienteDTO.getSenha());
+                cliente.setTelefone(clienteDTO.getTelefone());
+                cliente.setDataNascimento(clienteDTO.getDataNascimento());
+                return clienteMapper.toDTO(clienteRepository.save(cliente));
+            })
+            .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
     }
 
     public void deletarCliente(Long id) {
         clienteRepository.deleteById(id);
     }
 }
+
