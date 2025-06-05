@@ -1,5 +1,11 @@
 package com.example.demo.dto;
 
+import java.time.LocalDate;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
 public class ClienteDTO {
 
   private Long id;
