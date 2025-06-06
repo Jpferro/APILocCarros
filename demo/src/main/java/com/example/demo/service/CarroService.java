@@ -1,6 +1,8 @@
-package com.example.demo.Services;
+package com.example.demo.service;
 
 import com.example.demo.Entities.Carro;
+import com.example.demo.dto.CarroDTO;
+import com.example.demo.mapper.CarroMapper;
 import com.example.demo.Repositories.CarroRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,28 +16,35 @@ public class CarroService {
     @Autowired
     private CarroRepository carroRepository;
 
-    public Carro criarCarro(Carro carro) {
-        return carroRepository.save(carro);
+    @Autowired
+    private CarroMapper carroMapper;
+
+    public List<CarroDTO> listarTodos() {
+        return carroMapper.toDTOList(carroRepository.findAll());
     }
 
-    public List<Carro> listarTodos() {
-        return carroRepository.findAll();
+    public Optional<CarroDTO> buscarPorId(Long id) {
+        return carroRepository.findById(id).map(carroMapper::toDTO);
     }
 
-    public Optional<Carro> buscarPorId(Long id) {
-        return carroRepository.findById(id);
+    public CarroDTO criarCarro(CarroDTO carroDTO) {
+        Carro carro = carroMapper.toEntity(carroDTO);
+        Carro salvo = carroRepository.save(carro);
+        return carroMapper.toDTO(salvo);
     }
 
-    public Carro atualizarCarro(Long id, Carro carroAtualizado) {
-        return carroRepository.findById(id).map(carro -> {
-            carro.setModelo(carroAtualizado.getModelo());
-            carro.setMarca(carroAtualizado.getMarca());
-            carro.setAnoFabricacao(carroAtualizado.getAnoFabricacao());
-            carro.setPlaca(carroAtualizado.getPlaca());
-            carro.setDisponivel(carroAtualizado.getDisponivel());
-            carro.setPrecoDiaria(carroAtualizado.getPrecoDiaria());
-            return carroRepository.save(carro);
-        }).orElseThrow(() -> new RuntimeException("Carro não encontrado"));
+    public CarroDTO atualizarCarro(Long id, CarroDTO carroDTO) {
+        return carroRepository.findById(id)
+            .map(carro -> {
+                carro.setModelo(carroDTO.getModelo());
+                carro.setMarca(carroDTO.getMarca());
+                carro.setAnoFabricacao(carroDTO.getAnoFabricacao());
+                carro.setPlaca(carroDTO.getPlaca());
+                carro.setDisponivel(carroDTO.getDisponivel());
+                carro.setPrecoDiaria(carroDTO.getPrecoDiaria());
+                return carroMapper.toDTO(carroRepository.save(carro));
+            })
+            .orElseThrow(() -> new RuntimeException("Carro não encontrado"));
     }
 
     public void deletarCarro(Long id) {
