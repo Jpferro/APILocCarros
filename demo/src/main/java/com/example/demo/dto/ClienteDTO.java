@@ -1,19 +1,13 @@
 package com.example.demo.dto;
 
-<<<<<<< HEAD
 import java.time.LocalDate;
-=======
->>>>>>> 925f7a31d9d562c88d54aac58916a292148c04e3
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-<<<<<<< HEAD
-=======
 import java.time.LocalDate;
 
->>>>>>> 925f7a31d9d562c88d54aac58916a292148c04e3
 public class ClienteDTO {
 
   private Long id;
